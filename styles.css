@@ -14,8 +14,17 @@ h1 {
     margin: 10px;
 }
 img {
-    height: 30px;
-    width: 60px;
+    width: 70px;
+    height: auto;
+}
+.logo {
+    position: fixed;
+    top: 10px;
+    left: 1px;
+    /* width: 80px; adjust as needed */
+    /* height: auto; */
+    z-index: 1000; /* High z-index to stay on top */
+    background-color: transparent;
 }
 /* Header with "राम राम" centered */
 #header {
