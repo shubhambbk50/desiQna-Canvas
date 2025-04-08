@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Jamboard Clone</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+<body>
+
+    <!-- Header with Hindi Text -->
+    <div id="header">
+        <button id="prevPageBtn" class="toolBtn" title="Previous Page">
+            <i class="fas fa-arrow-left"></i>
+        </button>
+        <h1>राम राम</h1>
+        <button id="nextPageBtn" class="toolBtn" title="Next Page">
+            <i class="fas fa-arrow-right"></i>
+        </button>
+    </div>
+
+    <!-- Sidebar with drawing tools -->
+    <div id="sidebar">
+        <button id="penBtn" class="toolBtn" title="Pen">
+            <i class="fas fa-pen"></i>
+        </button>
+        <button id="eraserBtn" class="toolBtn" title="Eraser">
+            <i class="fas fa-eraser"></i>
+        </button>
+        <button id="highlightBtn" class="toolBtn" title="Highlighter">
+            <i class="fas fa-highlighter"></i>
+        </button>
+
+        <input type="color" id="colorPicker" class="colorPicker" title="Pick a Color">
+
+        <div class="bottomTools">
+            <div class="brush">
+                <input type="range" id="brushSize" class="brushSize" min="1" max="50" value="5" title="Brush Size">
+            </div>
+            <div class="sidebar-buttons">
+                <button id="clearBtn" class="toolBtn" title="Clear Board">
+                    <i class="fas fa-trash"></i>
+                </button>
+                <button id="saveBtn" class="toolBtn" title="Save Page">
+                    <i class="fas fa-save"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Canvas area for drawing -->
+    <div id="canvasContainer">
+        <canvas id="drawingCanvas"></canvas>
+        <div id="slideNumber"></div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
