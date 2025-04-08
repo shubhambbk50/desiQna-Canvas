@@ -119,7 +119,7 @@ function draw(e) {
         ctx.shadowColor = currentColor;
     } else if (currentTool === 'eraser') {
         ctx.strokeStyle = 'rgba(0,0,0,1)';
-        ctx.lineWidth = currentSize;
+        ctx.lineWidth = currentSize*4;
         ctx.shadowBlur = 0;
         ctx.shadowColor = 'transparent';
     }
