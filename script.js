@@ -6,7 +6,7 @@ const ctx = canvas.getContext('2d');
 let isDrawing = false;
 let lastX = 0, lastY = 0;
 let currentTool = 'pen';
-let currentColor = '#39FF14';
+let currentColor = '#39FF14'; // Default color is green
 let currentSize = 3;
 let currentPage = 0;
 
@@ -20,7 +20,10 @@ let canvasPages = [{
 const penBtn = document.getElementById('penBtn');
 const eraserBtn = document.getElementById('eraserBtn');
 const highlightBtn = document.getElementById('highlightBtn');
-const colorPicker = document.getElementById('colorPicker');
+const colorGreenBtn = document.getElementById('colorGreen');
+const colorRedBtn = document.getElementById('colorRed');
+const colorBlueBtn = document.getElementById('colorBlue');
+const colorWhiteBtn = document.getElementById('colorWhite');
 const brushSize = document.getElementById('brushSize');
 const clearBtn = document.getElementById('clearBtn');
 const saveBtn = document.getElementById('saveBtn');
@@ -54,7 +57,10 @@ ctx.lineWidth = currentSize;
 penBtn.onclick = () => setTool('pen');
 eraserBtn.onclick = () => setTool('eraser');
 highlightBtn.onclick = () => setTool('highlight');
-colorPicker.oninput = (e) => currentColor = e.target.value;
+colorGreenBtn.onclick = () => setColor('#39FF14');
+colorRedBtn.onclick = () => setColor('red');
+colorBlueBtn.onclick = () => setColor('skyblue');
+colorWhiteBtn.onclick = () => setColor('white');
 brushSize.oninput = (e) => currentSize = e.target.value;
 clearBtn.onclick = clearBoard;
 saveBtn.onclick = saveDrawing;
@@ -86,6 +92,14 @@ function setTool(tool) {
     ctx.globalCompositeOperation = (tool === 'eraser') ? 'destination-out' : 'source-over';
 }
 
+// Set color for drawing tools
+function setColor(color) {
+    currentColor = color;
+    if (currentTool === 'pen') {
+        ctx.strokeStyle = currentColor;
+    }
+}
+
 // Drawing logic
 function startDrawing(e) {
     isDrawing = true;
@@ -103,29 +117,36 @@ function draw(e) {
     if (!isDrawing) return;
     const [x, y] = getCoordinates(e);
 
-    ctx.beginPath();
-    ctx.moveTo(lastX, lastY);
-    ctx.lineTo(x, y);
+    // Calculate the distance between the last drawn position and current position
+    const distance = Math.sqrt(Math.pow(x - lastX, 2) + Math.pow(y - lastY, 2));
 
-    if (currentTool === 'pen') {
-        ctx.strokeStyle = currentColor;
-        ctx.lineWidth = currentSize;
-        ctx.shadowBlur = 15;
-        ctx.shadowColor = currentColor;
-    } else if (currentTool === 'highlight') {
-        ctx.strokeStyle = currentColor + '88';
-        ctx.lineWidth = currentSize * 2;
-        ctx.shadowBlur = 10;
-        ctx.shadowColor = currentColor;
-    } else if (currentTool === 'eraser') {
-        ctx.strokeStyle = 'rgba(0,0,0,1)';
-        ctx.lineWidth = currentSize*4;
-        ctx.shadowBlur = 0;
-        ctx.shadowColor = 'transparent';
+    // If the distance is greater than a threshold (e.g., 5 pixels), draw
+    if (distance > 5) {
+        ctx.beginPath();
+        ctx.moveTo(lastX, lastY);
+        ctx.lineTo(x, y);
+
+        // Apply tool styles
+        if (currentTool === 'pen') {
+            ctx.strokeStyle = currentColor;
+            ctx.lineWidth = currentSize;
+            ctx.shadowBlur = 15;
+            ctx.shadowColor = currentColor;
+        } else if (currentTool === 'highlight') {
+            ctx.strokeStyle = currentColor + '88'; // Add transparency to highlight
+            ctx.lineWidth = currentSize * 2;
+            ctx.shadowBlur = 10;
+            ctx.shadowColor = currentColor;
+        } else if (currentTool === 'eraser') {
+            ctx.strokeStyle = 'rgba(0,0,0,1)';
+            ctx.lineWidth = currentSize * 4;
+            ctx.shadowBlur = 0;
+            ctx.shadowColor = 'transparent';
+        }
+
+        ctx.stroke();
+        [lastX, lastY] = [x, y];
     }
-
-    ctx.stroke();
-    [lastX, lastY] = [x, y];
 }
 
 function getCoordinates(e) {

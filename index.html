@@ -13,16 +13,19 @@
     <!-- Header with Hindi Text -->
     <div id="header">
         <button id="prevPageBtn" class="toolBtn" title="Previous Page">
-            <i class="fas fa-arrow-left"></i>
+            <p class="prev">prev</p>
+            <!-- <i class="fas fa-arrow-left"></i> -->
         </button>
-        <h1>राम राम</h1>
+        <h2>राम राम</h2>
         <button id="nextPageBtn" class="toolBtn" title="Next Page">
-            <i class="fas fa-arrow-right"></i>
+            <p class="next">next</p>
+            <!-- <i class="fas fa-arrow-right"></i> -->
         </button>
     </div>
 
     <!-- Sidebar with drawing tools -->
-    <div class="logo"><img src="https://res.cloudinary.com/dnsfppmbc/image/upload/v1744135178/gp3mhrqofrvyvarl9pmv.png" alt="DesiQna" srcset="">
+    <div class="logo">
+        <img src="https://res.cloudinary.com/dnsfppmbc/image/upload/v1744135178/gp3mhrqofrvyvarl9pmv.png" alt="DesiQna">
     </div>
     <div id="sidebar">
         <button id="penBtn" class="toolBtn" title="Pen">
@@ -35,7 +38,13 @@
             <i class="fas fa-highlighter"></i>
         </button>
 
-        <input type="color" id="colorPicker" class="colorPicker" title="Pick a Color">
+        <!-- Color buttons -->
+        <div class="colorButtons">
+            <button id="colorGreen" class="colorBtn" style="background-color: #39FF14;" title="Green"></button>
+            <button id="colorRed" class="colorBtn" style="background-color: red;" title="Red"></button>
+            <button id="colorBlue" class="colorBtn" style="background-color: rgb(60, 151, 204);" title="Blue"></button>
+            <button id="colorWhite" class="colorBtn" style="background-color: white;" title="White"></button>
+        </div>
 
         <div class="bottomTools">
             <div class="brush">

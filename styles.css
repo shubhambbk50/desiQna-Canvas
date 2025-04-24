@@ -13,6 +13,13 @@ body {
 h1 {
     margin: 10px;
 }
+
+.prev {
+    font-size: 15px;
+}
+.next {
+    font-size: 15px;
+}
 img {
     width: 70px;
     height: auto;
@@ -279,3 +286,38 @@ canvas {
     font-weight: bold;
     text-shadow: 0 0 10px #ff0;
 }
+
+
+/* Existing styles omitted for brevity */
+
+/* Color buttons */
+.colorButtons {
+    display: flex;
+    flex-direction: column;
+    gap: 10px; /* space between color buttons */
+    margin-top: 20px;
+}
+
+.colorBtn {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: none;
+    cursor: pointer;
+    box-shadow: 0 0 8px #00ffea;
+}
+
+.colorBtn:hover {
+    box-shadow: 0 0 15px #00ffea;
+}
+
+/* Canvas styling */
+/* canvas {
+    background-color: #1c1c2b;
+    border: 2px solid #00ffea;
+    cursor: crosshair;
+    display: block;
+    width: 100%;
+    height: 100%;
+    box-shadow: 0 0 20px #00ffea;
+} */
