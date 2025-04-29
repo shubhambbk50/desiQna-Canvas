@@ -6,7 +6,7 @@ const ctx = canvas.getContext('2d');
 let isDrawing = false;
 let lastX = 0, lastY = 0;
 let currentTool = 'pen';
-let currentColor = '#39FF14'; // Default color is green
+let currentColor = '#39FF14'; // Default green
 let currentSize = 3;
 let currentPage = 0;
 
@@ -34,7 +34,7 @@ const slideNumberDiv = document.getElementById('slideNumber');
 // Initialize brush size
 brushSize.value = currentSize;
 
-// Resize canvas to match screen and fix alignment
+// Resize canvas to match screen
 function resizeCanvas() {
     const sidebar = document.getElementById('sidebar');
     const sidebarWidth = sidebar ? sidebar.offsetWidth : 0;
@@ -45,7 +45,6 @@ function resizeCanvas() {
     canvas.width = window.innerWidth - sidebarWidth;
     canvas.height = window.innerHeight;
 }
-
 resizeCanvas();
 
 // Tool settings
@@ -75,10 +74,10 @@ document.addEventListener('keydown', (e) => {
 canvas.addEventListener('mousedown', startDrawing);
 canvas.addEventListener('mouseup', stopDrawing);
 canvas.addEventListener('mouseout', stopDrawing);
-canvas.addEventListener('mousemove', draw);
+canvas.addEventListener('mousemove', handleDraw);
 canvas.addEventListener('touchstart', startDrawing);
 canvas.addEventListener('touchend', stopDrawing);
-canvas.addEventListener('touchmove', draw);
+canvas.addEventListener('touchmove', handleDraw);
 
 window.addEventListener('resize', () => {
     saveCurrentState();
@@ -92,7 +91,7 @@ function setTool(tool) {
     ctx.globalCompositeOperation = (tool === 'eraser') ? 'destination-out' : 'source-over';
 }
 
-// Set color for drawing tools
+// Set color
 function setColor(color) {
     currentColor = color;
     if (currentTool === 'pen') {
@@ -110,38 +109,44 @@ function stopDrawing() {
     if (!isDrawing) return;
     isDrawing = false;
     ctx.shadowBlur = 0;
+    ctx.shadowColor = 'transparent';
     saveCurrentState();
+}
+
+let drawingScheduled = false;
+function handleDraw(e) {
+    if (drawingScheduled || !isDrawing) return;
+    drawingScheduled = true;
+    requestAnimationFrame(() => {
+        draw(e);
+        drawingScheduled = false;
+    });
 }
 
 function draw(e) {
     if (!isDrawing) return;
     const [x, y] = getCoordinates(e);
 
-    // Calculate the distance between the last drawn position and current position
     const distance = Math.sqrt(Math.pow(x - lastX, 2) + Math.pow(y - lastY, 2));
 
-    // If the distance is greater than a threshold (e.g., 5 pixels), draw
-    if (distance > 5) {
+    if (distance > 1) {
         ctx.beginPath();
         ctx.moveTo(lastX, lastY);
         ctx.lineTo(x, y);
 
-        // Apply tool styles
+        // Reset glow always
+        ctx.shadowBlur = 0;
+        ctx.shadowColor = 'transparent';
+
         if (currentTool === 'pen') {
             ctx.strokeStyle = currentColor;
             ctx.lineWidth = currentSize;
-            ctx.shadowBlur = 15;
-            ctx.shadowColor = currentColor;
         } else if (currentTool === 'highlight') {
-            ctx.strokeStyle = currentColor + '88'; // Add transparency to highlight
+            ctx.strokeStyle = currentColor + '88'; // transparent color
             ctx.lineWidth = currentSize * 2;
-            ctx.shadowBlur = 10;
-            ctx.shadowColor = currentColor;
         } else if (currentTool === 'eraser') {
             ctx.strokeStyle = 'rgba(0,0,0,1)';
             ctx.lineWidth = currentSize * 4;
-            ctx.shadowBlur = 0;
-            ctx.shadowColor = 'transparent';
         }
 
         ctx.stroke();
@@ -149,21 +154,20 @@ function draw(e) {
     }
 }
 
+
+
 function getCoordinates(e) {
-    if (e.type.includes('touch')) {
-        e = e.touches[0];
-    }
+    if (e.type.includes('touch')) e = e.touches[0];
     const rect = canvas.getBoundingClientRect();
-    return [
-        e.clientX - rect.left,
-        e.clientY - rect.top
-    ];
+    return [e.clientX - rect.left, e.clientY - rect.top];
 }
 
 // History
 function saveCurrentState() {
     const dataURL = canvas.toDataURL();
-    canvasPages[currentPage].history.push(dataURL);
+    const history = canvasPages[currentPage].history;
+    history.push(dataURL);
+    if (history.length > 50) history.shift(); // Limit history size
     canvasPages[currentPage].undone = [];
     canvasPages[currentPage].image = dataURL;
 }
@@ -225,16 +229,11 @@ function prevPage() {
 }
 
 function loadImage(dataURL) {
-    if (!dataURL) {
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        return;
-    }
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    if (!dataURL) return;
     const img = new Image();
     img.src = dataURL;
-    img.onload = () => {
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        ctx.drawImage(img, 0, 0);
-    };
+    img.onload = () => ctx.drawImage(img, 0, 0);
 }
 
 function updateSlideNumber() {
